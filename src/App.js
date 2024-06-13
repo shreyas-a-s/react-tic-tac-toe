@@ -31,6 +31,10 @@ export default function Board() {
     setSquares(newSquares)
   }
 
+  function onResetClick() {
+    setSquares(Array(9).fill(null))
+  }
+
   return (
     <>
       <div className="board-row">
@@ -47,6 +51,9 @@ export default function Board() {
         <Square value={squares[6]} onSquareClick={() => {handleClick(6)}}/>
         <Square value={squares[7]} onSquareClick={() => {handleClick(7)}}/>
         <Square value={squares[8]} onSquareClick={() => {handleClick(8)}}/>
+      </div>
+      <div className="reset-button">
+        <button onClick={ onResetClick }>Reset</button>
       </div>
     </>
   )
