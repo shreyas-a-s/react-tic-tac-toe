@@ -4,23 +4,11 @@ function Square({ value, onSquareClick }) {
   return <button className="square" onClick={ onSquareClick }>{value}</button>
 }
 
-export default function Board() {
-  const [xIsNext, setXIsNext] = useState(true)
-  const [squares, setSquares] = useState(() => {
-    const localValue = localStorage.getItem("SQUARES")
-    if (localValue == null) return Array(9).fill(null)
-
-    return JSON.parse(localValue)
-  })
-
-  useEffect(() => {
-    localStorage.setItem("SQUARES", JSON.stringify(squares))
-  }, [squares])
-
+function Board({xIsNext, squares, setSquares, setXIsNext, onPlay}) {
 
   function handleClick(index) {
     // Prevents changing X <-> Y on already marked square
-    if (squares[index] || calculateWinner(squares)) {
+    if (calculateWinner(squares) || squares[index]) {
       return
     }
 
@@ -32,12 +20,7 @@ export default function Board() {
       newSquares[index] = "O"
     }
 
-    setXIsNext(!xIsNext)
-    setSquares(newSquares)
-  }
-
-  function onResetClick() {
-    setSquares(Array(9).fill(null))
+    onPlay(newSquares)
   }
 
   const winner = calculateWinner(squares);
@@ -66,11 +49,49 @@ export default function Board() {
         <Square value={squares[7]} onSquareClick={() => {handleClick(7)}}/>
         <Square value={squares[8]} onSquareClick={() => {handleClick(8)}}/>
       </div>
+    </>
+  )
+}
+
+export default function Game() {
+  const [xIsNext, setXIsNext] = useState(true)
+  const [history, setHistory] = useState(() => {
+    const localValue = localStorage.getItem("HISTORY")
+    if (localValue == null) return [Array(9).fill(null)]
+
+    return JSON.parse(localValue)
+  })
+
+  const currentSquares = history[history.length - 1]
+
+  useEffect(() => {
+    localStorage.setItem("HISTORY", JSON.stringify(history))
+  }, [history])
+
+  function handlePlay(newSquares) {
+    setHistory([...history, newSquares]);
+    setXIsNext(!xIsNext);
+  }
+
+  function onResetClick() {
+    setHistory([Array(9).fill(null)])
+  }
+
+  return (
+    <>
+      <div className="game">
+        <div className="game-board">
+          <Board xIsNext={xIsNext} squares={currentSquares} setSquares={setHistory} setXIsNext={setXIsNext} onPlay={handlePlay}/>
+        </div>
+        <div className="game-info">
+          <ol>{/*TODO*/}</ol>
+        </div>
+      </div>
       <div className="reset-button">
         <button onClick={ onResetClick }>Reset</button>
       </div>
     </>
-  )
+  );
 }
 
 function calculateWinner(squares) {
