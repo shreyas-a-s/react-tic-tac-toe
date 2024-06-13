@@ -62,14 +62,18 @@ export default function Game() {
     return JSON.parse(localValue)
   })
 
-  const currentSquares = history[history.length - 1]
+  const [currentMove, setCurrentMove] = useState(0)
+
+  const currentSquares = history[currentMove];
 
   useEffect(() => {
     localStorage.setItem("HISTORY", JSON.stringify(history))
   }, [history])
 
   function handlePlay(newSquares) {
-    setHistory([...history, newSquares]);
+  const nextHistory = [...history.slice(0, currentMove + 1), newSquares];
+  setHistory(nextHistory);
+  setCurrentMove(nextHistory.length - 1);
     setXIsNext(!xIsNext);
   }
 
@@ -78,7 +82,8 @@ export default function Game() {
   }
 
   function jumpTo(nextMove) {
-    // TODO
+    setCurrentMove(nextMove);
+    setXIsNext(nextMove % 2 === 0);
   }
 
   const moves = history.map((squares, move) => {
@@ -89,7 +94,7 @@ export default function Game() {
       description = 'Go to game start'
     }
     return (
-      <li>
+      <li key={move}>
         <button onClick={() => jumpTo(move)}>{description}</button>
       </li>
     )
