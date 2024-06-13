@@ -4,7 +4,7 @@ function Square({ value, onSquareClick }) {
   return <button className="square" onClick={ onSquareClick }>{value}</button>
 }
 
-function Board({xIsNext, squares, setSquares, setXIsNext, onPlay}) {
+function Board({xIsNext, squares, setSquares, onPlay}) {
 
   function handleClick(index) {
     // Prevents changing X <-> Y on already marked square
@@ -54,7 +54,6 @@ function Board({xIsNext, squares, setSquares, setXIsNext, onPlay}) {
 }
 
 export default function Game() {
-  const [xIsNext, setXIsNext] = useState(true)
   const [history, setHistory] = useState(() => {
     const localValue = localStorage.getItem("HISTORY")
     if (localValue == null) return [Array(9).fill(null)]
@@ -63,6 +62,7 @@ export default function Game() {
   })
 
   const [currentMove, setCurrentMove] = useState(0)
+  const xIsNext = currentMove % 2 === 0;
 
   const currentSquares = history[currentMove];
 
@@ -74,7 +74,6 @@ export default function Game() {
   const nextHistory = [...history.slice(0, currentMove + 1), newSquares];
   setHistory(nextHistory);
   setCurrentMove(nextHistory.length - 1);
-    setXIsNext(!xIsNext);
   }
 
   function onResetClick() {
@@ -83,7 +82,6 @@ export default function Game() {
 
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
-    setXIsNext(nextMove % 2 === 0);
   }
 
   const moves = history.map((squares, move) => {
@@ -104,7 +102,7 @@ export default function Game() {
     <>
       <div className="game">
         <div className="game-board">
-          <Board xIsNext={xIsNext} squares={currentSquares} setSquares={setHistory} setXIsNext={setXIsNext} onPlay={handlePlay}/>
+          <Board xIsNext={xIsNext} squares={currentSquares} setSquares={setHistory} onPlay={handlePlay}/>
         </div>
         <div className="game-info">
           <ol>{moves}</ol>
