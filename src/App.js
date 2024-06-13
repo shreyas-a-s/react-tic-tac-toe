@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 function Square({ value, onSquareClick }) {
   return <button className="square" onClick={ onSquareClick }>{value}</button>
@@ -6,7 +6,17 @@ function Square({ value, onSquareClick }) {
 
 export default function Board() {
   const [xIsNext, setXIsNext] = useState(true)
-  const [squares, setSquares] = useState(Array(9).fill(null))
+  const [squares, setSquares] = useState(() => {
+    const localValue = localStorage.getItem("SQUARES")
+    if (localValue == null) return Array(9).fill(null)
+
+    return JSON.parse(localValue)
+  })
+
+  useEffect(() => {
+    localStorage.setItem("SQUARES", JSON.stringify(squares))
+  }, [squares])
+
 
   function handleClick(index) {
     const newSquares = squares.slice()
