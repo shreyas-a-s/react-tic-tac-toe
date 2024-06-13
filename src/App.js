@@ -108,9 +108,10 @@ export default function Game() {
           <ol>{moves}</ol>
         </div>
       </div>
-      <div className="reset-button">
-        <button onClick={ onResetClick }>Reset</button>
-      </div>
+      {/* TODO: Fix reset button which is causing errors */}
+      {/* <div className="reset-button"> */}
+      {/*   <button onClick={ onResetClick }>Reset</button> */}
+      {/* </div> */}
     </>
   );
 }
