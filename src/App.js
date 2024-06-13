@@ -44,6 +44,8 @@ export default function Board() {
   let status;
   if (winner) {
     status = "Winner: " + winner;
+  } else {
+    status = "Next player: " + (xIsNext ? "X" : "O");
   }
 
   return (
