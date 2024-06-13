@@ -19,6 +19,11 @@ export default function Board() {
 
 
   function handleClick(index) {
+    // Prevents changing X <-> Y on already marked square
+    if (squares[index]) {
+      return
+    }
+
     const newSquares = squares.slice()
     if (xIsNext) {
       newSquares[index] = "X"
